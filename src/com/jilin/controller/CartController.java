@@ -24,16 +24,26 @@ public class CartController {
         cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
         cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
         cart.setUserId(request.getParameter("userId"));
-        cart.setQuantity(Integer.valueOf(request.getParameter("quantity")));
         CartService cartserv = new CartServiceImpl();
         return cartserv.addCart(cart);
     }
     //修改购物车
-    public User updateCart(HttpServletRequest request){
-        return null;
+    public int updateCart(HttpServletRequest request){
+        Cart cart = new Cart();
+        cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
+        cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
+        cart.setUserId(request.getParameter("userId"));
+        cart.setQuantity(Integer.valueOf(request.getParameter("quantity")));
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.updateCart(cart);
     }
     //删除购物车
     public int removeCart(HttpServletRequest request){
-        return 0;
+        Cart cart = new Cart();
+        cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
+        cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
+        cart.setUserId(request.getParameter("userId"));
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.updateCart(cart);
     }
 }

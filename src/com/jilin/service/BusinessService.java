@@ -2,7 +2,6 @@ package com.jilin.service;
 
 import com.jilin.entity.Business;
 
-import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
 public interface BusinessService {

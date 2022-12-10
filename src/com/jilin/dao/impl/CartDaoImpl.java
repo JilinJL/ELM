@@ -55,7 +55,11 @@ public class CartDaoImpl implements CartDao {
             pst.setString(2, cart.getUserId());
             pst.setString(3, String.valueOf(cart.getFoodId()));
             ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
             return ret;
+
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -74,6 +78,8 @@ public class CartDaoImpl implements CartDao {
             pst.setString(3,cart.getUserId());
             pst.setInt(4,cart.getFoodId());
             ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
             return ret;
 
         }catch (Exception e) {
@@ -93,9 +99,12 @@ public class CartDaoImpl implements CartDao {
             pst.setString(2, cart.getUserId());
             pst.setInt(3,cart.getFoodId());
             ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
             return ret;
 
-        }catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
         return 0;
