@@ -1,10 +1,11 @@
-package com.jilin.dao;
+package com.jilin.service;
 
 import com.jilin.entity.Orders;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-public interface OrdersDao {
+public interface OrdersService {
     //创建订单
     int createOrders(Orders order);
     //获取用户订单

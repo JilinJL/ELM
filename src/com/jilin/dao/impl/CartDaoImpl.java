@@ -51,9 +51,9 @@ public class CartDaoImpl implements CartDao {
             Connection con = MySqlUtil.getConn();
             String sql ="INSERT INTO cart(businessId, userId, foodId)values(?,?,?)";
             PreparedStatement pst = con.prepareStatement(sql);
-            pst.setString(1, String.valueOf(cart.getBusinessId()));
+            pst.setInt(1, cart.getBusinessId());
             pst.setString(2, cart.getUserId());
-            pst.setString(3, String.valueOf(cart.getFoodId()));
+            pst.setInt(3, cart.getFoodId());
             ret = pst.executeUpdate();
 
             MySqlUtil.close(pst, con);

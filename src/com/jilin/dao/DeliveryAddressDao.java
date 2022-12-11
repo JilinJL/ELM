@@ -10,9 +10,9 @@ public interface DeliveryAddressDao {
     //修改地址
     int updateDeliveryAddress(DeliveryAddress DA);
     //删除地址
-    int removeDeliveryAddress(DeliveryAddress DA);
+    int removeDeliveryAddress(Integer daId);
     //查询某一地址
-    DeliveryAddress getDeliveryAddressById(String daId);
+    DeliveryAddress getDeliveryAddressById(Integer daId);
     //查询所有地址
     List<DeliveryAddress> listDeliveryAddressByUserId(String userId);
 }

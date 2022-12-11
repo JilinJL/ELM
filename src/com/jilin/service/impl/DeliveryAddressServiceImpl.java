@@ -22,13 +22,13 @@ public class DeliveryAddressServiceImpl implements DeliveryAddressService {
     }
 
     @Override
-    public int removeDeliveryAddress(DeliveryAddress DA) {
+    public int removeDeliveryAddress(Integer daId) {
         DeliveryAddressDao dao = new DeliveryAddressDaoImpl();
-        return dao.removeDeliveryAddress(DA);
+        return dao.removeDeliveryAddress(daId);
     }
 
     @Override
-    public DeliveryAddress getDeliveryAddressById(String daId) {
+    public DeliveryAddress getDeliveryAddressById(Integer daId) {
         DeliveryAddressDao dao = new DeliveryAddressDaoImpl();
         return dao.getDeliveryAddressById(daId);
 

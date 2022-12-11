@@ -29,18 +29,24 @@ public class DeliveryAddressController {
         address.setContactTel(request.getParameter("contactTel"));
         address.setAddress(request.getParameter("address"));
         DeliveryAddressService DAserv = new DeliveryAddressServiceImpl();
-        return DAserv.addDeliveryAddress(address);
+        return DAserv.updateDeliveryAddress(address);
     }
     //删除地址
     public int removeDeliveryAddress(HttpServletRequest request){
-        return 0;
+        Integer daId = Integer.valueOf(request.getParameter("daId"));
+        DeliveryAddressService DAserv = new DeliveryAddressServiceImpl();
+        return DAserv.removeDeliveryAddress(daId);
     }
     //查询某一地址
     public DeliveryAddress getDeliveryAddressById(HttpServletRequest request){
-        return null;
+        Integer daId = Integer.valueOf(request.getParameter("daId"));
+        DeliveryAddressService DAserv = new DeliveryAddressServiceImpl();
+        return DAserv.getDeliveryAddressById(daId);
     }
     //查询所有地址
     public List<DeliveryAddress> listDeliveryAddressByUserId(HttpServletRequest request){
-        return null;
+        String userId = request.getParameter("userId");
+        DeliveryAddressService DAserv = new DeliveryAddressServiceImpl();
+        return DAserv.listDeliveryAddressByUserId(userId);
     }
 }

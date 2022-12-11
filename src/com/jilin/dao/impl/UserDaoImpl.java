@@ -44,7 +44,6 @@ public class UserDaoImpl implements UserDao {
                 int count = rs.getInt("count");
                 return count;
             }
-//        6. 释放资源
             MySqlUtil.close(rs,stmt,con);
         } catch (SQLException e) {
             e.printStackTrace();

@@ -1,13 +1,4 @@
----
-title: 饿了么项目接口实现_更新ing
-author: jilin
-tags: 
-  - java
-  - javaweb
-categories: 
-- [JavaWeb]
-
----
+<hr>
 
 
 
@@ -109,9 +100,9 @@ public class mainFilter implements Filter {
 
 
 
-## 1.用户操作
+## 1.用户-User
 
-接口:
+### 1.1接口
 
 > ### 注册
 >
@@ -136,9 +127,29 @@ public class mainFilter implements Filter {
 > |  **参数**  | {<br/>    userId:this.userId, //账号<br/>	password:this.password //密码<br/>} |
 > | **返回值** | **User对象** <br />Class User {<br/>	private String userId;<br/>	private String password;<br/>	private String userName;<br/>	private Integer userSex;<br/>	private String userImg;<br/>	private Integer delTag;<br/>} |
 
-### 1.1结构
+### 
 
 ![结构1](https://gitee.com/jilinJL/my-pictures/raw/master/img/202212032159943.png)
+
+***User*** 实体类
+
+```java
+package com.jilin.entity;
+
+public class User {
+    private String userId;
+    private String password;
+    private String userName;
+    private Integer userSex;
+    private String userImg;
+    private Integer delTag;
+
+	//constructor()
+	//get() and set() 过于冗长 这里不展示
+    // ...
+}
+
+```
 
 **UserController**
 
@@ -195,36 +206,6 @@ public class UserDaoImpl implements UserDao {
 }
 ```
 
-***User*** 实体类
-
-```java
-package com.jilin.entity;
-
-public class User {
-    private String userId;
-    private String password;
-    private String userName;
-    private Integer userSex;
-    private String userImg;
-    private Integer delTag;
-
-    public User(String userId, String password, String userName, Integer userSex, String userImg, Integer delTag) {
-        this.userId = userId;
-        this.password = password;
-        this.userName = userName;
-        this.userSex = userSex;
-        this.userImg = userImg;
-        this.delTag = delTag;
-    }
-    public User(){
-
-    }
-	//get() and set() 过于冗长 这里不展示
-    // ...
-}
-
-```
-
 ***UserService*** 接口
 
 ```java
@@ -262,7 +243,7 @@ public class UserServiceImpl implements UserService {
 
 ### 1.2业务实现
 
-**UserController**
+#### **UserController**
 
 ```java
 public class UserController {
@@ -298,7 +279,7 @@ public class UserController {
 }
 ```
 
-**UserDaoImpl**
+#### **UserDaoImpl**
 
 ```java
 public class UserDaoImpl implements UserDao {
@@ -375,7 +356,7 @@ public class UserDaoImpl implements UserDao {
 }
 ```
 
-**UserServiceImpl**
+#### **UserServiceImpl**
 
 ```java
 public class UserServiceImpl implements UserService {
@@ -402,3 +383,543 @@ public class UserServiceImpl implements UserService {
 
 
 <hr>
+
+## 2.商家-Business
+
+### 2.1接口
+
+> ### 查询商家
+>
+> |  接口地址  | BusinessController/listBusinessByOrderTypeId |
+> | :--------: | -------------------------------------------- |
+> |  **参数**  | orderTypeId:this.orderTypeId //点餐分类      |
+> | **返回值** | **List<Business\>** 商家集合                 |
+>
+> 
+>
+> ### 根据businessId查询商家信息
+>
+> |  接口地址  | BusinessController/getBusinessById  |
+> | :--------: | ----------------------------------- |
+> |  **参数**  | businessId:this.businessId //商家Id |
+> | **返回值** | **Business**对象                    |
+
+### 2.2业务实现
+
+***Business***实体
+
+```java
+package com.jilin.entity;
+
+public class Business {
+    private Integer businessId;
+    private String businessName;
+    private String businessAddress;
+    private String businessExplain;
+    private String businessImg;
+    private Integer orderTypeId;
+    private Double starPrice;
+    private Double deliveryPrice;
+    private String remarks;
+    
+     //constructor()
+	//get() and set()
+}
+```
+
+
+
+#### **BusinessController**
+
+```java
+public class BusinessController {
+    //查询商家
+    public List<Business> listBusinessByOrderTypeId(HttpServletRequest request){
+        BusinessService BusServ = new BusinessServiceImpl();
+        int type = Integer.parseInt(request.getParameter("orderTypeId"));
+        List<Business> list = BusServ.listBusiness(type);
+        return list;
+    }
+    //根据id查询商家信息
+    public Business getBusinessById(HttpServletRequest request){
+        int Id = Integer.parseInt(request.getParameter("businessId"));
+        BusinessService BusServ = new BusinessServiceImpl();
+        return BusServ.getBusinessById(Id);
+    }
+
+}
+```
+
+#### *BusinessDao*
+
+```java
+public interface BusinessDao {
+
+    //查询商家列表
+    List<Business> listBusiness(Integer orderTypeId);
+
+    //根据id查询商家信息
+    Business getBusinessById(Integer businessId);
+}
+```
+
+#### **BusinessDaoImpl**
+
+```java
+public class BusinessDaoImpl implements BusinessDao {
+
+    //获取分类商家
+    @Override
+    public List<Business> listBusiness(Integer orderTypeId) {
+        //System.out.println("获取列表成功");
+        List<Business> busList = new ArrayList<>();
+        try{
+            Connection con = MySqlUtil.getConn();
+            String sql = "Select * from business where orderTypeId = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, String.valueOf(orderTypeId));
+            ResultSet rs = pst.executeQuery();
+            while (rs.next()) {
+                Business bus = new Business();
+                bus.setBusinessId(rs.getInt("orderTypeId"));
+                bus.setBusinessName(rs.getString("businessName"));
+                bus.setBusinessAddress(rs.getString("businessAddress"));
+                bus.setBusinessExplain(rs.getString("businessExplain"));
+                bus.setBusinessImg(rs.getString("businessImg"));
+                bus.setStarPrice(rs.getDouble("starPrice"));
+                bus.setDeliveryPrice(rs.getDouble("deliveryPrice"));
+                bus.setRemarks(rs.getString("remarks"));
+                busList.add(bus);
+            }
+            MySqlUtil.close(rs,pst,con);
+        }catch (Exception e){
+            e.printStackTrace();
+
+        }
+        return busList;
+    }
+
+    //根据id获取信息
+    @Override
+    public Business getBusinessById(Integer businessId) {
+        try {
+        //System.out.println("搜索成功");
+        Connection con = MySqlUtil.getConn();
+        String sql = "SELECT * FROM business where businessId = ?";
+        PreparedStatement pst = con.prepareStatement(sql);
+        pst.setString(1, String.valueOf(businessId));
+        ResultSet rs = pst.executeQuery();
+        while(rs.next()) {
+            Business bus = new Business();
+            bus.setBusinessId(rs.getInt("orderTypeId"));
+            bus.setBusinessName(rs.getString("businessName"));
+            bus.setBusinessAddress(rs.getString("businessAddress"));
+            bus.setBusinessExplain(rs.getString("businessExplain"));
+            bus.setBusinessImg(rs.getString("businessImg"));
+            bus.setStarPrice(rs.getDouble("starPrice"));
+            bus.setDeliveryPrice(rs.getDouble("deliveryPrice"));
+            bus.setRemarks(rs.getString("remarks"));
+            return bus;
+        }
+
+            MySqlUtil.close(rs,pst,con);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+}
+```
+
+#### *BusinessService* 
+
+```java
+public interface BusinessService {
+    //根据id查询商家信息
+    List<Business> listBusiness(Integer type);
+    //查询商家
+    Business getBusinessById(Integer id);
+}
+```
+
+#### **BusinessServiceImpl**
+
+```java
+public class BusinessServiceImpl implements BusinessService {
+
+    @Override
+    public List<Business> listBusiness(Integer type) {
+        BusinessDao dao = new BusinessDaoImpl();
+        return dao.listBusiness(type);
+    }
+
+    @Override
+    public Business getBusinessById(Integer id) {
+        BusinessDao dao = new BusinessDaoImpl();
+        return dao.getBusinessById(id);
+    }
+}
+
+```
+
+## 3.购物车-Cart
+
+### 3.1接口
+
+> ### 添加到购物车
+>
+> |  接口地址  | CartController/saveCart                                      |
+> | :--------: | ------------------------------------------------------------ |
+> |  **参数**  | {<br />businessId:this.businessId, //商家id<br />userId:this.user.userId,  //用户id<br />foodId:this.foodArr[index].foodId  //食品id<br />} |
+> | **返回值** | **int** 影响的行数                                           |
+>
+> ### 删除购物车
+>
+> |  接口地址  | CartController/removeCart                                    |
+> | :--------: | ------------------------------------------------------------ |
+> |  **参数**  | {<br />businessId:this.businessId, //商家id<br />userId:this.user.userId,  //用户id<br />foodId:this.foodArr[index].foodId  //食品id<br />} |
+> | **返回值** | **int** 影响的行数                                           |
+>
+> ### 修改购物车
+>
+> |  接口地址  | CartController/updateCart                                    |
+> | :--------: | ------------------------------------------------------------ |
+> |  **参数**  | {<br />businessId:this.businessId, //商家id<br />userId:this.user.userId,  //用户id<br />foodId:this.foodArr[index].foodId  //食品id<br />quantity:this.foodArr[index].quantity+num //数量<br />} |
+> | **返回值** | **int** 影响的行数                                           |
+>
+> ### 查询购物车
+>
+> |  接口地址  | CartController/listCart         |
+> | :--------: | ------------------------------- |
+> |  **参数**  | userId：this.user.userId //账号 |
+> | **返回值** | **List<Cart\>** 购物车列表      |
+
+### 3.2业务实现
+
+***cart***实体类
+
+```java
+public class Cart {
+    private Integer cartId;
+    private Integer foodId;
+    private Integer businessId;
+    private String userId;
+    private Integer quantity;
+    private Food food;
+    private Business business;
+	//constructor()
+    //get() & set()
+}
+```
+
+#### **CartController**
+
+```java
+public class CartController {
+
+    //购物车列表
+    public List<Cart> listCart(HttpServletRequest request){
+        String userId = request.getParameter("userId");
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.listCart(userId);
+
+    }
+    //添加到购物车
+    public int saveCart(HttpServletRequest request){
+        Cart cart = new Cart();
+        cart.setCartId(Integer.valueOf(request.getParameter("cartId")));
+        cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
+        cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
+        cart.setUserId(request.getParameter("userId"));
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.addCart(cart);
+    }
+    //修改购物车
+    public int updateCart(HttpServletRequest request){
+        Cart cart = new Cart();
+        cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
+        cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
+        cart.setUserId(request.getParameter("userId"));
+        cart.setQuantity(Integer.valueOf(request.getParameter("quantity")));
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.updateCart(cart);
+    }
+    //删除购物车
+    public int removeCart(HttpServletRequest request){
+        Cart cart = new Cart();
+        cart.setFoodId(Integer.valueOf(request.getParameter("foodId")));
+        cart.setBusinessId(Integer.valueOf(request.getParameter("businessId")));
+        cart.setUserId(request.getParameter("userId"));
+        CartService cartserv = new CartServiceImpl();
+        return cartserv.updateCart(cart);
+    }
+}
+```
+
+#### *CartDao*
+
+```java
+public interface CartDao {
+    //查询购物车
+    List<Cart> listCart(String userId);
+    //添加到购物车
+    int addCart(Cart cart);
+    //修改购物车
+    int updateCart(Cart cart);
+    //删除购物车
+    int removeCart(Cart cart);
+}
+```
+
+#### **CartDaoImpl**
+
+```java
+public class CartDaoImpl implements CartDao {
+    @Override
+    public List<Cart> listCart(String userId) {
+        List<Cart> list = new ArrayList<>();
+        try{
+            Connection con = MySqlUtil.getConn();
+            //cartQuery 多表查询
+            String sql = "Select * from cart,food,business where cart.foodId = food.foodId and cart.businessId = business.businessId and cart.userId = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, userId);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                Cart cart = new Cart();
+                cart.setCartId(rs.getInt("cartId"));
+                cart.setUserId(rs.getString("userId"));
+                cart.setQuantity(rs.getInt("quantity"));
+                cart.setFoodId(rs.getInt("foodId"));
+                cart.setBusinessId(rs.getInt("businessId"));
+
+                //TODO 把Food和Business填上
+                cart.setFood(new Food(rs.getInt("foodId"),rs.getString("foodName"),rs.getString("foodExplain"),rs.getString("foodImg"),rs.getDouble("foodPrice"),rs.getInt("businessId"),rs.getString("remarks")));
+                cart.setBusiness(new Business(rs.getInt("businessId"),rs.getString("businessName"),rs.getString("businessAddress"),rs.getString("businessExplain"),rs.getString("businessImg"),rs.getInt("orderTypeId"),rs.getDouble("starPrice"),rs.getDouble("deliveryPrice"),rs.getString("remarks")));
+
+                list.add(cart);
+            }
+        MySqlUtil.close(rs,pst,con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+
+    @Override
+    public int addCart(Cart cart) {
+        int ret=0;
+        try{
+            Connection con = MySqlUtil.getConn();
+            String sql ="INSERT INTO cart(businessId, userId, foodId)values(?,?,?)";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, String.valueOf(cart.getBusinessId()));
+            pst.setString(2, cart.getUserId());
+            pst.setString(3, String.valueOf(cart.getFoodId()));
+            ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
+            return ret;
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int updateCart(Cart cart) {
+        int ret;
+        try{
+            Connection con = MySqlUtil.getConn();
+            String sql = "UPDATE cart SET quantity = ? where businessId = ? and userId = ? and foodId =? and quantity = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1,cart.getQuantity());
+            pst.setInt(2,cart.getBusinessId());
+            pst.setString(3,cart.getUserId());
+            pst.setInt(4,cart.getFoodId());
+            ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
+            return ret;
+
+        }catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+
+    @Override
+    public int removeCart(Cart cart) {
+        int ret;
+        try{
+            Connection con = MySqlUtil.getConn();
+            String sql = "DELETE FROM cart WHERE businessId = ? and userId = ? and foodId = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setInt(1,cart.getBusinessId());
+            pst.setString(2, cart.getUserId());
+            pst.setInt(3,cart.getFoodId());
+            ret = pst.executeUpdate();
+
+            MySqlUtil.close(pst, con);
+            return ret;
+
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        return 0;
+    }
+}
+```
+
+#### *CartService*
+
+```java
+public interface CartService {
+    //查询购物车
+    List<Cart> listCart(String userId);
+    //添加到购物车
+    int addCart(Cart cart);
+    //修改购物车
+    int updateCart(Cart cart);
+    //删除购物车
+    int removeCart(Cart cart);
+}
+```
+
+#### **CartServiceImpl**
+
+```java
+public class CartServiceImpl implements CartService {
+    @Override
+    public List<Cart> listCart(String userId) {
+        CartDao dao = new CartDaoImpl();
+        return dao.listCart(userId);
+    }
+    @Override
+    public int addCart(Cart cart) {
+        CartDao dao = new CartDaoImpl();
+        return dao.addCart(cart);
+    }
+    @Override
+    public int updateCart(Cart cart) {
+        CartDao dao = new CartDaoImpl();
+        return dao.addCart(cart);
+    }
+    @Override
+    public int removeCart(Cart cart) {
+        CartDao dao = new CartDaoImpl();
+        return dao.removeCart(cart);
+    }
+}
+```
+
+<hr>
+
+## 4.食品-Food
+
+### 4.1接口
+
+> ### 根据businessId查询所属食品信息
+>
+> |  接口地址  | FoodController/listFoodByBusinessId |
+> | :--------: | ----------------------------------- |
+> |  **参数**  | businessId:this.businessId //商家Id |
+> | **返回值** | **List<Food\>** 食品集合            |
+
+### 4.2业务实现
+
+***Food***实体类
+
+```java
+public class Food {
+    private Integer foodId;
+    private String foodName;
+    private String foodExplain;
+    private String foodImg;
+    private Double foodPrice;
+    private Integer businessId;
+    private String remarks;
+	//constructor
+    //get() & set()
+}
+```
+
+#### **FoodController**
+
+```java
+public class FoodController {
+    public List<Food> listFoodByBusinessId(HttpServletRequest request){
+        String businessId = request.getParameter("businessId");
+        FoodService service = new FoodServiceImpl();
+        return service.listFoodByBusinessId(businessId);
+    }
+}
+```
+
+#### *FoodDao*
+
+```java
+public interface FoodDao {
+    List<Food> listFoodByBusinessId(String businessId);
+}
+```
+
+#### **FoodDaoImpl**
+
+```java
+public class FoodDaoImpl implements FoodDao {
+    @Override
+    public List<Food> listFoodByBusinessId(String businessId) {
+        List<Food> list = new ArrayList<>();
+        try{
+            Connection con = MySqlUtil.getConn();
+            //cartQuery
+            String sql = "Select * from food where businessId = ?";
+            PreparedStatement pst = con.prepareStatement(sql);
+            pst.setString(1, businessId);
+            ResultSet rs = pst.executeQuery();
+            while(rs.next()){
+                Food food = new Food();
+                food.setFoodId(rs.getInt("foodId"));
+                food.setFoodName(rs.getString("foodName"));
+                food.setFoodExplain(rs.getString("foodExplain"));
+                food.setFoodImg(rs.getString("foodImg"));
+                food.setFoodPrice(rs.getDouble("foodPrice"));
+                food.setBusinessId(Integer.valueOf(businessId));
+                food.setRemarks(rs.getString("remarks"));
+
+                list.add(food);
+            }
+            MySqlUtil.close(rs,pst,con);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
+}
+```
+
+#### *FoodService*
+
+```java
+public interface FoodService {
+    List<Food> listFoodByBusinessId(String businessId);
+}
+```
+
+#### **FoodServiceImpl**
+
+```java
+public class FoodServiceImpl implements FoodService {
+    @Override
+    public List<Food> listFoodByBusinessId(String businessId) {
+        FoodDao dao = new FoodDaoImpl();
+        return dao.listFoodByBusinessId(businessId);
+    }
+}
+```
+
+## 5.地址-Address
