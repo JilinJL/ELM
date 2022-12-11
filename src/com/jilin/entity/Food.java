@@ -9,8 +9,7 @@ public class Food {
     private Integer businessId;
     private String remarks;
 
-    public Food() {
-    }
+
 
     public Food(Integer foodId, String foodName, String foodExplain, String foodImg, Double foodPrice, Integer businessId, String remarks) {
         this.foodId = foodId;
@@ -20,6 +19,10 @@ public class Food {
         this.foodPrice = foodPrice;
         this.businessId = businessId;
         this.remarks = remarks;
+    }
+
+    public Food() {
+
     }
 
     public Integer getFoodId() {

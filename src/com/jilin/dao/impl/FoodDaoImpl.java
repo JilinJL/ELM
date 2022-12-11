@@ -1,8 +1,6 @@
 package com.jilin.dao.impl;
 
 import com.jilin.dao.FoodDao;
-import com.jilin.entity.Business;
-import com.jilin.entity.Cart;
 import com.jilin.entity.Food;
 import com.jilin.utils.MySqlUtil;
 
@@ -22,6 +20,7 @@ public class FoodDaoImpl implements FoodDao {
             String sql = "Select * from food where businessId = ?";
             PreparedStatement pst = con.prepareStatement(sql);
             pst.setString(1, businessId);
+            System.out.println(businessId);
             ResultSet rs = pst.executeQuery();
             while(rs.next()){
                 Food food = new Food();
@@ -30,15 +29,15 @@ public class FoodDaoImpl implements FoodDao {
                 food.setFoodExplain(rs.getString("foodExplain"));
                 food.setFoodImg(rs.getString("foodImg"));
                 food.setFoodPrice(rs.getDouble("foodPrice"));
-                food.setBusinessId(Integer.valueOf(businessId));
+                food.setBusinessId(rs.getInt("businessId"));
                 food.setRemarks(rs.getString("remarks"));
-
                 list.add(food);
             }
             MySqlUtil.close(rs,pst,con);
+            return list;
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return list;
+        return null;
     }
 }

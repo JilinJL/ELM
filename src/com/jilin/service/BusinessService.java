@@ -10,5 +10,5 @@ public interface BusinessService {
     List<Business> listBusiness(Integer type);
 
     //查询商家
-    Business getBusinessById(Integer id);
+    Business getBusinessById(String id);
 }

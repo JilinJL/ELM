@@ -16,7 +16,7 @@ public class BusinessServiceImpl implements BusinessService {
     }
 
     @Override
-    public Business getBusinessById(Integer id) {
+    public Business getBusinessById(String id) {
         BusinessDao dao = new BusinessDaoImpl();
         return dao.getBusinessById(id);
     }

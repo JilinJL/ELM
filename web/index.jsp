@@ -10,16 +10,15 @@
   <head>
     <title>$Title$</title>
     <style>
-
+        #elm{
+          width: 100%;
+          height: 100%;
+          zoom: 0.7;
+        }
     </style>
   </head>
   <body>
-  <form action="userController/getList" method="get">
-    <input type="hidden" name="type" value="list">
-    <input type="text" name="username">
-    <input type="password" name="password">
-    <input type="submit" value="登陆">
-  </form>
-  <a href="add.jsp">添加数据</a>
+  elm
+  <iframe id="elm" src="http://localhost:8081/" frameborder="0"></iframe>
   </body>
 </html>

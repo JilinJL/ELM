@@ -11,13 +11,13 @@ public class BusinessController {
     //查询商家
     public List<Business> listBusinessByOrderTypeId(HttpServletRequest request){
         BusinessService BusServ = new BusinessServiceImpl();
-        int type = Integer.parseInt(request.getParameter("orderTypeId"));
-        List<Business> list = BusServ.listBusiness(type);
+        String type = request.getParameter("orderTypeId");
+        List<Business> list = BusServ.listBusiness(Integer.valueOf(type));
         return list;
     }
     //根据id查询商家信息
     public Business getBusinessById(HttpServletRequest request){
-        int Id = Integer.parseInt(request.getParameter("businessId"));
+        String Id = request.getParameter("businessId");
         BusinessService BusServ = new BusinessServiceImpl();
         return BusServ.getBusinessById(Id);
     }

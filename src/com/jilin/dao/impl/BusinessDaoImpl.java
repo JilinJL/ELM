@@ -1,10 +1,8 @@
 package com.jilin.dao.impl;
 
-import com.alibaba.fastjson.JSON;
 import com.jilin.dao.BusinessDao;
 import com.jilin.entity.Business;
 import com.jilin.utils.MySqlUtil;
-import com.sun.org.omg.CORBA.ExceptionDescription;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -45,7 +43,7 @@ public class BusinessDaoImpl implements BusinessDao {
 
     //根据id获取信息
     @Override
-    public Business getBusinessById(Integer businessId) {
+    public Business getBusinessById(String businessId) {
         try {
         //System.out.println("搜索成功");
         Connection con = MySqlUtil.getConn();
